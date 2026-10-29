@@ -126,7 +126,7 @@ namespace esphome
             {BLE_CarServer_VehicleAction::MEDIA_NEXT_TRACK,                 "mediaNextTrack",            AllowedMsg::VehicleActionMessage,  CarServer_VehicleAction_mediaNextTrack_tag,                     GetOnSet::Invalid,         0},
             {BLE_CarServer_VehicleAction::MEDIA_PREVIOUS_TRACK,             "mediaPreviousTrack",        AllowedMsg::VehicleActionMessage,  CarServer_VehicleAction_mediaPreviousTrack_tag,                 GetOnSet::Invalid,         0},
             {BLE_CarServer_VehicleAction::SET_LOW_POWER_MODE_SWITCH,        "setLowPowerModeSwitch",     AllowedMsg::VehicleActionMessage,  CarServer_VehicleAction_setLowPowerModeAction_tag,              GetOnSet::Invalid,         0},
-            {BLE_CarServer_VehicleAction::SET_KEEP_ACCESSORY_SWITCH,        "setKeepAccessorySwitch",    AllowedMsg::VehicleActionMessage,  CarServer_VehicleAction_setKeepAccessoryPowerModeAction_tag,  	GetOnSet::Invalid,         0},
+            {BLE_CarServer_VehicleAction::SET_KEEP_ACCESSORY_SWITCH,        "setKeepAccessorySwitch",    AllowedMsg::VehicleActionMessage,  CarServer_VehicleAction_setLowPowerModeAction_tag,            GetOnSet::Invalid,         0},
         }};
         static_assert(ACTION_SPECIFICS.size() == static_cast<std::size_t>(BLE_CarServer_VehicleAction::_COUNT), "ACTION_SPECIFICS out of sync with enum");
         static const char *const TAG = "tesla_ble_vehicle";
@@ -282,6 +282,8 @@ namespace esphome
             int ble_disconnected_time_;
             int ble_disconnected_min_time_;
             int fast_poll_if_unlocked_ = 1; // != 0 enables fast polling
+            int post_connect_poll_time_ = 0;
+            int ble_connect_time_ = 0;
             int number_updates_since_connection_ = 0;
             UniversalMessage_RoutableMessage read_queue_message_;
             CarServer_Response static_carserver_response_;
@@ -300,7 +302,7 @@ namespace esphome
             void load_polling_parameters (const int post_wake_poll_time, const int poll_data_period,
                                           const int poll_asleep_period, const int poll_charging_period,
                                           const int ble_disconnected_min_time, const int fast_poll_if_unlocked,
-                                          const int wake_on_boot);
+                                          const int wake_on_boot, const int post_connect_poll_time);
             void process_command_queue();
             void process_response_queue();
             void process_ble_read_queue();

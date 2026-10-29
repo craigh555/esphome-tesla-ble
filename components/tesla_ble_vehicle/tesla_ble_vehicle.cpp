@@ -999,7 +999,8 @@ namespace esphome
                   previous_asleep_state_, car_just_woken_, car_is_charging_, binary_sensors_[static_cast<size_t>(BinarySensorId::IsUnlocked)]->state, binary_sensors_[static_cast<size_t>(BinarySensorId::IsUserPresent)]->state, fast_poll_if_unlocked_);
         
         //if (car_just_woken_ or OneOffUpdate or car_is_charging_ or this->is_unlocked_->state or this->is_user_present_->state)
-        if (one_off_update_ or (binary_sensors_[static_cast<size_t>(BinarySensorId::IsUnlocked)]->state and (fast_poll_if_unlocked_ > 0)) or binary_sensors_[static_cast<size_t>(BinarySensorId::IsUserPresent)]->state)
+        if (one_off_update_ or (binary_sensors_[static_cast<size_t>(BinarySensorId::IsUnlocked)]->state and (fast_poll_if_unlocked_ > 0)) or binary_sensors_[static_cast<size_t>(BinarySensorId::IsUserPresent)]->state
+            or (post_connect_poll_time_ > 0 and ble_connect_time_ != 0 and (millis() - ble_connect_time_) < (uint32_t)post_connect_poll_time_))
         { // For these fastest poll rate is used
           do_poll_ = true;
         }
@@ -1206,7 +1207,7 @@ namespace esphome
     void TeslaBLEVehicle::load_polling_parameters (const int post_wake_poll_time, const int poll_data_period,
                                                    const int poll_asleep_period, const int poll_charging_period,
                                                    const int ble_disconnected_min_time, const int fast_poll_if_unlocked,
-                                                   const int wake_on_boot)
+                                                   const int wake_on_boot, const int post_connect_poll_time)
     {
       // All timings are in milliseconds
       post_wake_poll_time_ = post_wake_poll_time * 1000;
@@ -1216,6 +1217,7 @@ namespace esphome
       ble_disconnected_min_time_ = ble_disconnected_min_time * 1000;
       fast_poll_if_unlocked_ = fast_poll_if_unlocked;
       wake_on_boot_ = wake_on_boot;
+      post_connect_poll_time_ = post_connect_poll_time * 1000;
     }
 
     void TeslaBLEVehicle::regenerateKey()
@@ -2102,6 +2104,7 @@ namespace esphome
           ble_disconnected_ = BleConnected;
           number_updates_since_connection_ = 0; //Reset update loop counter
           publishSensor (NumericSensorId::BleDisconnectedTime, 0);
+          ble_connect_time_ = millis();
 
           // generate random connection id 16 bytes
           pb_byte_t connection_id[16];

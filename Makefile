@@ -29,7 +29,7 @@ logs: .venv/touchfile
 deps: .venv/touchfile ## Create the virtual environment and install the requirements.
 
 .venv/touchfile: requirements.txt
-	test -d .venv || python -m venv .venv
+	test -d .venv || python3 -m venv .venv
 	. .venv/bin/activate && pip install -Ur requirements.txt
 	touch .venv/touchfile
 

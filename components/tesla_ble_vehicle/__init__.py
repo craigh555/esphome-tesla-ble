@@ -47,6 +47,7 @@ CONF_POLL_CHARGING_PERIOD = "poll_charging_period" # Period to poll for data whe
 CONF_BLE_DISCONNECTED_MIN_TIME = "ble_disconnected_min_time" # Minimum time BLE must be disconnected before sensors are Unknown (s)
 CONF_FAST_POLL_IF_UNLOCKED = "fast_poll_if_unlocked" # if != 0, fast polls are enabled when unlocked
 CONF_WAKE_ON_BOOT = "wake_on_boot" # != 0 wakes car on device boot
+CONF_POST_CONNECT_POLL_TIME = "post_connect_poll_time" # How long to fast poll after BLE connection (s), 0 = disabled
 
 SENSORS = {
     "is_asleep": binary (BinarySensorId.IsAsleep,
